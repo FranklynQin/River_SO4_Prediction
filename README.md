@@ -1,2 +1,2 @@
-# River_SO4_Prediction
+# Contiguous US Riverine Sulfate Flux Prediction
 Code used for data downloading, processing and machine learning prediction
