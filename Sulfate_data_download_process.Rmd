@@ -1,7 +1,7 @@
 ---
-title: "Data Downloading and Processing Workflow v6"
+title: "Data Downloading and Processing Workflow v7"
 author: "Liyang Qin"
-date: "2024-11-07"
+date: "2024-11-08"
 output: html_document
 ---
 
@@ -33,7 +33,7 @@ library(ggplot2)
 current_path <- getActiveDocumentContext()$path
 setwd(dirname(current_path))
 
-# need to load httr to get the progress for dataretrieval 
+# Need to load httr to get the progress for dataretrieval 
 set_config(verbose())
 set_config(progress())
 
@@ -41,12 +41,12 @@ set_config(progress())
 
 ## Step 1: Data Downloading from WQP
 ```{r}
-# read in state. 
+# Read in state. 
 download_states <- fread('states_conus.csv')
 
-(states_codes <- download_states$short) #when giving the value to states_codes but also print it out
+(states_codes <- download_states$short) # when giving the value to states_codes but also print it out
 
-# read in site type
+# Read in site type
 site_type <- c("Stream","Aggregate surface-water-use") 
 
 # Selecting Sulfate character names 
@@ -56,7 +56,7 @@ analyte.name <- c("Sulfate", "Sulfate as SO4", "Total Sulfate", "Sulfur Sulfate"
 system.time(for (analyte in analyte.name){
   
   for (state_code in states_codes){
- #Try 5 times for downloading to prevent internet issue; in reality, it may need more try to download all the data   
+# Try 5 times for downloading to prevent internet issue; in reality, it may need more tries to download all the data.   
     for(i in 1:5){
       try({
         cat("this is", i, "try\n\n")
@@ -85,12 +85,12 @@ system.time(for (analyte in analyte.name){
 
 ```
 
-## Step 2: Combining 5 analytes spreadsheets together
+## Step 2: Combining five spreadsheets containing various sulfate characteristic names
 ```{r}
 download_states <- fread('states_conus.csv')
 par_name <-  "sulfate"
 
-#combining 5 sulfate analytes spreadsheets together from multiple CONUS
+# Combining 5 different sulfate analytes spreadsheets
 
 state_codes <- download_states$short #all CONUS states
 analyte_names <- c("Sulfate", "Sulfate as S", "Sulfate as SO4", "Sulfur Sulfate", "Total Sulfate")
@@ -132,7 +132,7 @@ dim(all.raw.so4)
 saveRDS(all.raw.so4, file = "allrawso4.rds", compress = FALSE)
 ```
 
-## Step 3: Check if NA is present in several columns in the imported dataset
+## Step 3: Remove NA in StateCode and remove unreasonable dates
 ```{r}
 
 # Check if any NA in the Station$StateCode
@@ -160,7 +160,7 @@ all.raw.so4[, is_unreasonable_date := NULL]
 
 ```
 
-## Step 4: Read in the list of sites downloaded from WQP website
+## Step 4: Add State and CountyCodes with FIPS Codes, Standardize Code Formats
 ```{r}
 # Add State and county names to the data
 state.fips <- data.table(State = state.name, fips = fips(state.name)) 
@@ -206,7 +206,7 @@ print(value_counts)
 saveRDS(all.raw.so4, file = "allrawso4_noNA_statecd.rds", compress = FALSE)
 ```
 
-## Step 5: Data Subsetting by selecting columns we need
+## Step 5: Data Subsetting by selecting columns thar are needed
 ```{r}
 columns_select <- c(
   'site_no',
@@ -285,7 +285,7 @@ so4.media.filtered <- so4.location.type[mask, ]
 # There is one combination that is "Other" in ActivityMediaName and NA in ActivityMediaSubdivisionName, which should be dropped
 so4.media.filtered[, .N, by = .(ActivityMediaName, ActivityMediaSubdivisionName)][order(-N)]
 
-# second mask for Other and NA
+# Second mask for the combination of Other and NA
 mask.other <- so4.media.filtered$ActivityMediaName %in% c("Other")
 
 mask.na <- so4.media.filtered$ActivityMediaSubdivisionName %in% c(NA)
@@ -317,7 +317,7 @@ so4.result.type[, .N, by = ResultStatusIdentifier][order(N, decreasing = T)]
 # Keep only actual
 so4.result.type <- so4.result.type[ResultValueTypeName == "Actual"]
 
-#Drop any results that are rejected. Official documents show: Reported result has not been accepted; Water Quality Portal visible. Note we only have 4 for Sulfate, maybe more for other analyte.
+# Drop any results that are rejected. Official documents show: Reported result has not been accepted; Water Quality Portal visible. Note we only have 4 for Sulfate, maybe more for other analyte.
 so4.result.type <- so4.result.type[!ResultStatusIdentifier == "Rejected"] 
 
 so4.result.type[, .N, by = ResultValueTypeName][order(N, decreasing = T)]
@@ -412,7 +412,7 @@ saveRDS(so4.numeric.handle, file = "so4_numeric_conversion.rds", compress = FALS
 ```{r}
 so4.dection.limit <- copy(so4.numeric.handle)
 
-#add a column censorcode
+# Add a column censorcode
 so4.dection.limit$censorcode <- "nc"
 
 so4.dection.limit[, .N, by=ResultDetectionConditionText][order(-N),]
@@ -450,7 +450,7 @@ so4.dection.limit[, .N, by=censorcode][order(-N),]
 so4.dection.limit <- so4.dection.limit[!ResultDetectionConditionText %in% "Systematic Contamination"]
 
 so4.dection.limit[, .N, by=ActivityTypeCode][order(-N),]
-#remove blanks and spikes, and maybe all quality control samples? #need FIX
+# Remove blanks and spikes, and maybe all quality control samples? #need FIX
 so4.quality.control.rm <- so4.dection.limit[!ActivityTypeCode %in% c(
   "Quality Control Sample-Field Blank",
   "Quality Control Sample-Equipment Blank",
@@ -479,18 +479,14 @@ so4.quality.control.rm <- so4.dection.limit[!ActivityTypeCode %in% c(
   'Quality Control-Negative Control'
 )]
 
-#remove NA rows
+# Remove NA rows
 so4.quality.control.rm <- so4.quality.control.rm[!is.na(ResultMeasureValue) & ResultMeasureValue != ""]
-
-# #For those has measurevalues but does not have unit, assign the detection limit unit
-# value.no.unit <- so4.dectlim_subset[!is.na(ResultMeasureValue) & is.na(ResultMeasure.MeasureUnitCode)]
-
 
 # When ResultMeasure.MeasureUnitCode is NA but we still have a proper value 
 so4.quality.control.rm[!is.na(ResultMeasureValue) & is.na(ResultMeasure.MeasureUnitCode),
          ResultMeasure.MeasureUnitCode := DetectionQuantitationLimitMeasure.MeasureUnitCode]
 
-#Check if still have NA
+# Check if still have NA
 sum(is.na(so4.quality.control.rm$ResultMeasureValue))
 
 ```
@@ -502,15 +498,13 @@ saveRDS(so4.quality.control.rm, file = "so4_detectlim_noblanks.rds", compress = 
 
 ## Step 11: Unit Conversion
 ```{r}
-
-
 so4.unit <- copy(so4.quality.control.rm)
-# check units 
+# Check units 
 so4.unit[, .N, by = ResultMeasure.MeasureUnitCode][order(-N)]
 
 (m_so4 <- mass("S") + mass("O")*4)
 
-#Based on the previous results, filter the ones that are not following the standard units/unused units /uncommon units
+# Based on the previous results, filter the ones that are not following the standard units/unused units /uncommon units
 so4.unit <- so4.unit[!(
   ResultMeasure.MeasureUnitCode %in% c(
     "None",
@@ -527,12 +521,12 @@ so4.unit <- so4.unit[!(
   )
 )]
 
-# change to mol/L
+# Change to mol/L
 if (par_name == "sulfate"){
   so4.unit$unit <- "mol/L"
 }
 
-#Conversion
+# Conversion
 if (par_name == "sulfate"){
   so4.unit[ResultMeasure.MeasureUnitCode == "mg/l", value := ResultMeasureValue * 1e-3/m_so4]
   so4.unit[ResultMeasure.MeasureUnitCode == "mg/L", value := ResultMeasureValue * 1e-3/m_so4]
@@ -544,7 +538,7 @@ if (par_name == "sulfate"){
   so4.unit[ResultMeasure.MeasureUnitCode == "umol/L", value := ResultMeasureValue / 1e6]
 }
 
-# check NA values
+# Check NA values
 table(is.na(so4.unit$value), useNA = "always")
 so4.unit_na <- so4.unit[is.na(value)]
 
@@ -568,42 +562,42 @@ so4.above.zero <- so4.above.zero[value > 0, ]
 saveRDS(so4.unit, file = "so4_unit_conversion.rds", compress = FALSE)
 ```
 
-# Test block: check the difference between Total and Dissolved in samplefractiontext, find if the difference: if large, then we need to reject the previous assumption that we can treat total and dissolved as the same and vice versa.
+## Test block: No need to run every time. Just for checking the difference between Total and Dissolved in samplefractiontext, find if the difference: if large, then we need to reject the previous assumption that we can treat total and dissolved as the same and vice versa.
 ```{r}
-#  so each single day might have different ResultSampleFractionText: dissolved or total, but based on the result below suggested, the dissolved and total are close to each other, we can treat them as the same.
+#  Each single day might have different ResultSampleFractionText: dissolved or total, but based on the result below suggested, the dissolved and total are close to each other, we can treat them as the same.
 test.sample.fraction <- copy(so4.above.zero)
 test.sample.fraction[, .N, by = .(site_no, ActivityStartDate)][order(-N)]
 test.sample.fraction[, value := mean(value, na.rm = TRUE), by = c("site_no", "ActivityStartDate","ResultSampleFractionText")]
 
 test.sample.fraction <- unique(test.sample.fraction, by = c("site_no", "ActivityStartDate","ResultSampleFractionText"))
 
-(dt_frac <- test.sample.fraction[, .N, by = .(site_no, ActivityStartDate)][order(-N)])
+(test.frac <- test.sample.fraction[, .N, by = .(site_no, ActivityStartDate)][order(-N)])
 
-result <- if (2 %in% unique(dt_frac$N)) {
+test.result <- if (2 %in% unique(test.frac$N)) {
     # merge data
-    dt_merged <- dt_frac[N == 2][test.sample.fraction, 
+    test_merged <- test.frac[N == 2][test.sample.fraction, 
         on = c("site_no", "ActivityStartDate")]
     
     # Check hydrologic events
-    event_counts <- dt_merged[, .(event_count = uniqueN(HydrologicEvent)), 
+    test.event.counts <- test_merged[, .(event_count = uniqueN(HydrologicEvent)), 
         by = .(site_no, ActivityStartDate)]
     
-    # Filter out the data that has two events
-    dt_filtered <- dt_merged[event_counts[event_count == 2, 
+    # Filter out the data that has two hydrologic events
+    test.filtered <- test_merged[test.event.counts[event_count == 2, 
         .(site_no, ActivityStartDate)], 
         on = .(site_no, ActivityStartDate)]
     
     # Calculate the difference between total and dissolved
-    result_diff <- dt_filtered[, .(diff = value[ResultCategory == "Total"] - 
+    test.fraction.result.diff <- test.filtered[, .(diff = value[ResultCategory == "Total"] - 
         value[ResultCategory == "Dissolved"]), 
         by = .(site_no, ActivityStartDate)]
     
     # Check the quantile of the difference
-    quantile(result_diff$diff, na.rm = TRUE)
+    quantile(test.fraction.result.diff$diff, na.rm = TRUE)
 }
 
-## fix. plot the quantile plot
-ggplot(result_diff) + 
+## Plot the quantile plot
+ggplot(test.fraction.result.diff) + 
     geom_histogram(aes(x = diff), bins = 100) + 
     scale_x_continuous(labels = scales::comma) + 
     labs(title = "Difference between Total and Dissolved Sulfate", 
@@ -613,12 +607,10 @@ ggplot(result_diff) +
 ## From the plot, we can see that the difference between total and dissolved is very small, so we can treat them as the same.
 ```
 
-## Step 13: Remove duplicate based on the sample category and check total-dissolved difference, and average for single day
+## Step 13: Remove duplicate values based on the site_no, ActivityIdentifier and ResultSampleFractionText
 ```{r}
 
 # Group by site_no, ActivityIdentifier, ResultSampleFractionText and calculate the mean value. This is to see if in single day single activity there are duplicates. ActivityIdentifier should be unique, and if same day that activityidentifier pops up more than once, it should be regarded as wrong and be removed. On the other hand, replicate should be treated as two different sampling events and two different samples.
-
-#The assumption is that dissolved and total are the near the same, this block also test if the difference between the two are large or small: if small, then we can stay with the same assumption; if not, then we need to change to the original ResultSampleFrationText and groupby that.
 
 so4.no.duplicate <- copy(so4.above.zero)
 
@@ -629,7 +621,8 @@ so4.no.duplicate <- unique(so4.no.duplicate, by = c("site_no", "ActivityIdentifi
 
 ## Step 14: Remove the Remove outliers based on quantile
 ```{r}
-# we can mannually adjust this parameter to fit our needs, here we chose 0.1% as it rules out extremly high and low values. Shuang here used 99.5%, we think too many was being removed (apprx. 20K values incl. both upper and lower quantiles). Now it removes less than 4k.
+# Can manually adjust this parameter to fit our needs, here we chose 0.1% as it rules out extremely high and low values. Shuang here used 99.5%, we think too many was being removed (approx. 20K values incl. both upper and lower quantile). Now it removes less than 4k.
+
 so4.outliers <- copy(so4.no.duplicate)
 
 up_threshold <- quantile(so4.outliers$value, 0.999, na.rm = TRUE)
@@ -659,11 +652,10 @@ so4.final[, `:=`(stream_date = ymd(ActivityStartDate))]
 ```
 
 
-## Step 16: Save the final dataset as RDS file
+## Step 16: Save the final dataset and output to csv file
 ```{r}
 
-# drop columns that don't need for now
-
+# Drop columns that don't need for now
 so4.final[, c(
   "ActivityStartDate",
   "HydrologicEvent",
@@ -694,11 +686,10 @@ so4.final <- so4.final[, .(site_no,
 
 dim(so4.final)
 
-# save so4.final rds
-
+# Save so4.final rds
 saveRDS(so4.final, file = "so4_final.rds", compress = FALSE)
-# save to file 
 
+# Save to file 
 fwrite(so4.final, file = file.path("output", paste0(par_name, "_daily_averaged.csv")), row.names = FALSE)
 ```
 
