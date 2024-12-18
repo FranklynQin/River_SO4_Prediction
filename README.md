@@ -160,34 +160,61 @@ Overall, this preliminary study provides a framework for understanding riverine 
 |     Needleleaf                         |     land cover        |
 
 
-# Figure 1. A schematic diagram of a random forest (RF) model (from Sahour et al., 2021). In this project, nine out of ten data subsets will be used as input datasets for RF training. By optimizing hyperparameters—such as the number of trees, the minimum branch size in each sub-model, and the number of predictor variables selected at each split—we aim to maximize the model's potential and improve prediction accuracy.
-(assets/fig1.png)
-# Figure 2. Workflow diagram illustrating the process for predicting sulfate (SO₄²⁻) fluxes across the contiguous United States (CONUS). The process begins with data downloading, followed by sulfate concentration and discharge data processing, drainage area and watershed attribute calculations, and sulfate flux calculation. This information is then used for machine learning (ML) training, where unmonitored watershed attributes serve as test data. The trained ML model is subsequently applied to predict sulfate fluxes in ungauged catchments, resulting in high-resolution sulfate flux mapping for the continental U.S.
-(/assets/fig2.png)
-# Figure 3a. The histograms of sulfate flux used in the model training dataset. a. before truncation.
-(/assets/fig3a.png)
-# Figure 3b. The histograms of sulfate flux used in the model training dataset. b. after truncation.
-(/assets/fig3b.png)
-# Figure 4. Spatial distribution of USGS monitoring sites (blue dots) across the contiguous United States used as training data for the Random Forest model. The sites are particularly dense in the eastern United States and along the west coast, with sparser coverage in the central plains and mountain states. State boundaries are shown in black lines.
-(/assets/sitemap.png)
-# Figure 5. Spatial distribution of annual riverine sulfate flux (mg/km²/month) across the contiguous United States. The color gradient from dark blue to red represents increasing flux values, with the highest fluxes (3.45 \times 10^{10} \text{ mg/km²/month}) observed in parts of the northeastern United States. 
-(/assets/so4fluxmap.png)
-# Figure 6. Spatial distribution of log-scaled annual riverine sulfate flux (mg/km²/month) across the contiguous United States. The color gradient from dark blue to red represents increasing flux values, with the highest fluxes (3.45 \times 10^{10} \text{ mg/km²/month}) observed in parts of the northeastern United States.
-(/assets/so4fluxlog.png)
-# Figure 7. Conditional Permutation Importance (CPI) ranking of watershed attributes controlling riverine sulfate flux. The bars represent the relative importance of each feature, with longer bars indicating greater influence on sulfate flux predictions in the RF model.
-(/assets/cpi.png)
-# Figure 8. Atmospheric S deposition to the CONUS (Hinckley et al., 2020). a. 1989 scenario. b. 2017 scenario.
-(/assets/fig8.png)
-# Figure 9. Contiguous United States showing the location of geologic units that may contain pyrrhotite (Mauk et al., 2020). 
-(/assets/pyrrhotite.png)
-# Figure 10. U.S. coal production by region in 2022, highlighting regional contributions in percentage of share The figure is from USEIA (2024).
-(/assets/coal_production_map.jpg)
-# Figure 11. Top five coal-producing states in the U.S. for 2022, with Wyoming (#1), West Virginia (#2), Pennsylvania (#3), Illinois (#4), and Kentucky (#5) highlighted. The figure is from USEIA (2024). 
-(/assets/coalstate.png)
-# Figure 12. Comparison between predicted and calculated (ground truth) sulfate fluxes for the Random Forest model. The red line represents the 1:1 relationship, while points show individual predictions. 
-(/assets/sulfate_r2.png)
-# Figure 13. Residual plot of the Random Forest model predictions for sulfate flux. The red horizontal line represents zero residual (i.e., perfect prediction).
-(/assets/residual.png)
+![Figure 1. A schematic diagram of a random forest (RF) model](assets/fig1.png)
+
+*Figure 1. A schematic diagram of a random forest (RF) model (from Sahour et al., 2021). In this project, nine out of ten data subsets will be used as input datasets for RF training. By optimizing hyperparameters—such as the number of trees, the minimum branch size in each sub-model, and the number of predictor variables selected at each split—we aim to maximize the model's potential and improve prediction accuracy.*
+
+![Figure 2. Workflow diagram](assets/fig2.png)
+
+*Figure 2. Workflow diagram illustrating the process for predicting sulfate (SO₄²⁻) fluxes across the contiguous United States (CONUS). The process begins with data downloading, followed by sulfate concentration and discharge data processing, drainage area and watershed attribute calculations, and sulfate flux calculation. This information is then used for machine learning (ML) training, where unmonitored watershed attributes serve as test data. The trained ML model is subsequently applied to predict sulfate fluxes in ungauged catchments, resulting in high-resolution sulfate flux mapping for the continental U.S.*
+
+![Figure 3a. Sulfate flux histogram before truncation](assets/fig3a.png)
+
+*Figure 3a. The histograms of sulfate flux used in the model training dataset before truncation.*
+
+![Figure 3b. Sulfate flux histogram after truncation](assets/fig3b.png)
+
+*Figure 3b. The histograms of sulfate flux used in the model training dataset after truncation.*
+
+![Figure 4. USGS monitoring sites distribution](assets/sitemap.png)
+
+*Figure 4. Spatial distribution of USGS monitoring sites (blue dots) across the contiguous United States used as training data for the Random Forest model. The sites are particularly dense in the eastern United States and along the west coast, with sparser coverage in the central plains and mountain states. State boundaries are shown in black lines.*
+
+![Figure 5. Annual riverine sulfate flux distribution](assets/so4fluxmap.png)
+
+*Figure 5. Spatial distribution of annual riverine sulfate flux (mg/km²/month) across the contiguous United States. The color gradient from dark blue to red represents increasing flux values, with the highest fluxes (3.45 × 10¹⁰ mg/km²/month) observed in parts of the northeastern United States.*
+
+![Figure 6. Log-scaled annual riverine sulfate flux](assets/so4fluxlog.png)
+
+*Figure 6. Spatial distribution of log-scaled annual riverine sulfate flux (mg/km²/month) across the contiguous United States. The color gradient from dark blue to red represents increasing flux values, with the highest fluxes (3.45 × 10¹⁰ mg/km²/month) observed in parts of the northeastern United States.*
+
+![Figure 7. CPI ranking of watershed attributes](assets/cpi.png)
+
+*Figure 7. Conditional Permutation Importance (CPI) ranking of watershed attributes controlling riverine sulfate flux. The bars represent the relative importance of each feature, with longer bars indicating greater influence on sulfate flux predictions in the RF model.*
+
+![Figure 8. Atmospheric S deposition](assets/fig8.png)
+
+*Figure 8. Atmospheric S deposition to the CONUS (Hinckley et al., 2020). a. 1989 scenario. b. 2017 scenario.*
+
+![Figure 9. Pyrrhotite distribution](assets/pyrrhotite.png)
+
+*Figure 9. Contiguous United States showing the location of geologic units that may contain pyrrhotite (Mauk et al., 2020).*
+
+![Figure 10. Coal production by region](assets/coal_production_map.jpg)
+
+*Figure 10. U.S. coal production by region in 2022, highlighting regional contributions in percentage of share. The figure is from USEIA (2024).*
+
+![Figure 11. Top coal-producing states](assets/coalstate.png)
+
+*Figure 11. Top five coal-producing states in the U.S. for 2022, with Wyoming (#1), West Virginia (#2), Pennsylvania (#3), Illinois (#4), and Kentucky (#5) highlighted. The figure is from USEIA (2024).*
+
+![Figure 12. Predicted vs calculated sulfate fluxes](assets/sulfate_r2.png)
+
+*Figure 12. Comparison between predicted and calculated (ground truth) sulfate fluxes for the Random Forest model. The red line represents the 1:1 relationship, while points show individual predictions.*
+
+![Figure 13. Residual plot](assets/residual.png)
+
+*Figure 13. Residual plot of the Random Forest model predictions for sulfate flux. The red horizontal line represents zero residual (i.e., perfect prediction).*
 
 ## Reference
 Acharya, B.S., Kharel, G., 2020. Acid mine drainage from coal mining in the United States – An overview. Journal of Hydrology 588, 125061. https://doi.org/10.1016/j.jhydrol.2020.125061
