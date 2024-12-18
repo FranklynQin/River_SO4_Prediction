@@ -109,6 +109,7 @@ Although the RF model demonstrated intermediate level of predictive accuracy (R2
 Overall, this preliminary study provides a framework for understanding riverine sulfate fluxes in ungauged watersheds of CONUS, offering valuable insights into how various watershed attributes contribute to the sulfate fluxes in the stream. These findings have important implications for water resource management and future environmental monitoring efforts, particularly in addressing the impacts of sulfate on aquatic ecosystems and water quality across diverse landscapes in CONUS.
 
 ## Supplementary Materials
+### Table
 # Table S1. A list of all 45 watershed attributes, along with feature categories. 
 |     Feature name                       |     Category          |
 |----------------------------------------|-----------------------|
@@ -159,7 +160,7 @@ Overall, this preliminary study provides a framework for understanding riverine 
 |     Deciduous broadleaf                |     land cover        |
 |     Needleleaf                         |     land cover        |
 
-
+### Figures
 ![Figure 1. A schematic diagram of a random forest (RF) model](assets/fig1.png)
 
 *Figure 1. A schematic diagram of a random forest (RF) model (from Sahour et al., 2021). In this project, nine out of ten data subsets will be used as input datasets for RF training. By optimizing hyperparameters—such as the number of trees, the minimum branch size in each sub-model, and the number of predictor variables selected at each split—we aim to maximize the model's potential and improve prediction accuracy.*
