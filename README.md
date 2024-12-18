@@ -3,7 +3,7 @@
     
 *Liyang Qin*
 
-## Disclaimer: Due to size limitation, raw data can be downloaded using scripts provided in the code folder through Water Quality Portal.
+## Disclaimer: Due to size limitation (larger than GitHub storage limit), raw data can be downloaded using scripts provided in the code folder through Water Quality Portal.
 
 ## Literature Review
   ### Sulfate in the Environment
