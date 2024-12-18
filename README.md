@@ -161,7 +161,7 @@ Overall, this preliminary study provides a framework for understanding riverine 
 
 
 # Figure 1. A schematic diagram of a random forest (RF) model (from Sahour et al., 2021). In this project, nine out of ten data subsets will be used as input datasets for RF training. By optimizing hyperparameters—such as the number of trees, the minimum branch size in each sub-model, and the number of predictor variables selected at each split—we aim to maximize the model's potential and improve prediction accuracy.
-(/assets/fig1.png)
+(assets/fig1.png)
 # Figure 2. Workflow diagram illustrating the process for predicting sulfate (SO₄²⁻) fluxes across the contiguous United States (CONUS). The process begins with data downloading, followed by sulfate concentration and discharge data processing, drainage area and watershed attribute calculations, and sulfate flux calculation. This information is then used for machine learning (ML) training, where unmonitored watershed attributes serve as test data. The trained ML model is subsequently applied to predict sulfate fluxes in ungauged catchments, resulting in high-resolution sulfate flux mapping for the continental U.S.
 (/assets/fig2.png)
 # Figure 3a. The histograms of sulfate flux used in the model training dataset. a. before truncation.
