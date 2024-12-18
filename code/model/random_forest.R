@@ -50,7 +50,7 @@ source("Functions_axis_fixed.R")
 ##---------------------------------------------------------------------------##
 # 1.Load data 
 color_sequence <- c("#001219", "#0a9396", "#94d2bd", "#e9d8a6", "#ee9b00", "#ca6702", "#9b2226")
-so4_selection <- fread("input/Sulfate_selection_data.csv")
+so4_selection <- fread("analysis_data/agu_flux_training_final_outliers_rm.csv")
 hydroshed <- fread("input/Hydrosheds.csv")
 #so4_selection$site_no <- formatC(so4_selection$site_no, width = 15, format = "d", flag = "0")
 # Sulfate_with_features$site_no <- formatC(Sulfate_with_features$site_no, width = 8,

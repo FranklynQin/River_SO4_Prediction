@@ -1,4 +1,5 @@
-
+# Liyang Qin
+# This includes discharge data processing, flux calculation, flux truncation and histogram plot
 library(dataRetrieval)
 library(leaflet)
 library(httr)
@@ -130,5 +131,47 @@ wide_format_with_month.daily.agu <- wide_format_with_month %>%
 new.dailyflux.agu.wide_format <- merge(wide_format_with_month.daily.agu, longterm.monthly.flux.agu, by = c("site_no","month"), all.x = TRUE)
 
 # save as csv
-write.csv(new.dailyflux.agu.wide_format, "agu_flux_training_final_selection_new.csv", row.names = FALSE)
+#write.csv(new.dailyflux.agu.wide_format, "agu_flux_training_final_selection_new.csv", row.names = FALSE)
+
+agu_flux_training_final <- copy(new.dailyflux.agu.wide_format)
+
+# histogram
+
+ggplot(new.dailyflux.agu.wide_format, aes(x = Sulfate_flux_mg_per_km2_per_month)) +
+  geom_histogram(binwidth = 800000) +
+  xlim(0, 2.5e10) +
+  labs(
+    x = "Flux (mg/km²/month)",
+    y = "Frequency",
+    title = "Histogram of Sulfate Flux"
+  )
+
+up_threshold <- quantile(agu_flux_training_final$Sulfate_flux_mg_per_km2_per_month, 0.95, na.rm = TRUE)
+low_threshold <- quantile(agu_flux_training_final$Sulfate_flux_mg_per_km2_per_month, 0.05, na.rm = TRUE)
+
+agu_flux_training_final.outliers.rm <- agu_flux_training_final[Sulfate_flux_mg_per_km2_per_month <= up_threshold & Sulfate_flux_mg_per_km2_per_month >= low_threshold, ]
+
+agu_flux_training_final.outliers.rm <- na.omit(agu_flux_training_final.outliers.rm)
+agu_flux_training_final.outliers.rm <- agu_flux_training_final.outliers.rm[!is.infinite(Sulfate_flux_mg_per_km2_per_month),]
+
+write.csv(agu_flux_training_final.outliers.rm, "agu_flux_training_final_outliers_rm.csv")
+
+# histogram
+newhisto <- ggplot(agu_flux_training_final.outliers.rm, aes(x = Sulfate_flux_mg_per_km2_per_month)) +
+  geom_histogram(binwidth = 800000) +
+  xlim(0, 2.5e10) +
+  labs(
+    x = "Flux (mg/km²/month)",
+    y = "Frequency",
+    title = "Histogram of Sulfate Flux"
+  )
+
+ggsave(
+  filename = "sulfate_flux_histogram.pdf", 
+  plot = newhisto, 
+  width = 11, 
+  height = 8.5, 
+  dpi = 600, 
+  units = "in"
+)
 
