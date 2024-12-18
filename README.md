@@ -2,6 +2,9 @@
 # Predicting Riverine Sulfate Fluxes Across the United States Using Machine Learning
     
 *Liyang Qin*
+
+## Disclaimer: Due to size limitation, raw data can be downloaded using scripts provided in the code folder through Water Quality Portal.
+
 ## Literature Review
   ### Sulfate in the Environment
 Fresh water is a fundamental resource for human civilization, yet accessible fresh water only accounts for approximately one percent of the Earth's total freshwater supply (e.g., Shiklomanov, 1993; Schlesinger & Bernhardt, 2020). As an oxidized form of sulfur (S), sulfate is ubiquitous in the environment and is regarded as a key component in the global sulfur cycle (Zak et al., 2021). In most natural waters, sulfate (SO42-) plays a crucial role: it serves as a common soluble anion and constitutes a significant portion of the ionic charge (e.g., Miao et al., 2012; Wang & Zhang, 2019; Torres-Mart'nez et al., 2020; Zak et al., 2021). However, concentrations of SO42- in natural aquatic systems vary largely and are influenced mostly by the predominant catchment geology and hydrology (Kleeberg, 2014; Zak et al., 2021).
